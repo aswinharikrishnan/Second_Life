@@ -1,0 +1,18 @@
+{
+  "brand": "Samsung",
+  "model": "Galaxy S23",
+  "launch_price_inr": 74999,
+  "age_years": 1,
+  "ram_gb": 8,
+  "storage_gb": 128,
+  "battery_health_pct": 90,
+  "condition": "Excellent",
+  "screen_crack": "No",
+  "scratches": "Minor",
+  "box": "Yes",
+  "charger": "Yes",
+  "invoice": "Yes",
+  "warranty": "No",
+  "city": "Pune",
+  "seller_type": "Individual"
+}
