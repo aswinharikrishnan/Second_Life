@@ -1,122 +1,85 @@
-SecondLife ♻️📱
+# ♻️ SecondLife
 
-SecondLife is a collaborative used-smartphone decision support system aligned with UN SDG 12.5 (reducing e-waste through informed second-hand purchasing and repairability analysis).
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 
-This platform evaluates used smartphones using machine learning to determine their Fair Market Value (FMV) and provides actionable Buy / Negotiate / Pass recommendations to extend device lifecycles.
+> A collaborative, machine-learning-powered decision support system designed to reduce e-waste and promote the circular economy (**UN SDG 12.5**).
 
-🏗️ Architecture Overview
+SecondLife evaluates used smartphones via an XGBoost ML model to determine their Fair Market Value (FMV) and provides actionable **Buy / Negotiate / Pass** recommendations, extending device lifecycles.
 
-The project is structured as a decoupled full-stack application.
+---
 
-1. Frontend (Next.js)
+## 🏗️ System Architecture
 
-The frontend is a modern, high-performance web application built to consume the machine learning API and visualize the viability of second-hand devices.
+The application operates on a decoupled client-server architecture:
 
-Framework: Next.js (App Router) with TypeScript.
+* **Frontend (Next.js 15):** A highly responsive, server-side rendered dashboard built with App Router, TypeScript, and Tailwind CSS. Features dynamic Recharts visualizations and a custom decision engine for instant hardware viability feedback.
+* **Backend (FastAPI):** A high-throughput Python REST API handling data validation (via Pydantic) and inference.
+* **Machine Learning Engine:** An integrated Scikit-learn preprocessing pipeline (`joblib`) and XGBoost predictive model (`json`) determining precise INR resale values based on live hardware conditions.
 
-Styling: Tailwind CSS for a responsive, eco-tech aesthetic.
+---
 
-Visualizations: Recharts for comparing asking prices versus predicted fair values.
+## ⚡ Local Development Guide
 
-Key Features:
+You will need **Node.js (LTS)** and **Python 3.8+** installed. Run the backend and frontend in **two separate terminal instances**.
 
-Decision Engine: Automatically calculates a verdict based on the XGBoost prediction (≤0.9× = Buy, ≤1.15× = Negotiate, >1.15× = Pass).
+### 1. Start the Backend API (Terminal 1)
 
-One-Click Testing: A built-in "Fill with Test Payload" button to instantly populate the 16-field form with sample data (e.g., Samsung Galaxy S23).
+The backend must be running for the frontend to successfully submit predictions.
 
-Health Polling: Automatically polls the backend /health endpoint every 15 seconds to display a live Online/Offline status.
-
-2. Backend (FastAPI)
-
-The backend is a lightweight, high-speed Python API designed to serve the machine learning models.
-
-Framework: FastAPI (served via Uvicorn).
-
-Data Validation: Pydantic models (16 specific fields matching the frontend inputs) ensuring strict type-safety and data validation before model inference.
-
-Routing: Modular route structure (/predict/ for inference, /health/ for status).
-
-CORS: Pre-configured to accept requests from http://localhost:3000 (the Next.js frontend).
-
-3. Machine Learning (XGBoost)
-
-The predictive engine running inside the FastAPI backend.
-
-Preprocessor: secondlife_preprocessor.joblib (Scikit-learn pipeline for encoding categorical variables and scaling numerical inputs).
-
-Model: secondlife_xgb.json (Trained XGBoost model to predict the INR resale price based on hardware specs, physical condition, and battery health).
-
-🚀 Getting Started
-
-To run the full application locally, you will need to run the Backend and the Frontend in two separate terminal windows.
-
-Prerequisites
-
-Python 3.8+ (for the backend)
-
-Node.js (LTS) and npm (for the frontend)
-
-Step 1: Start the Backend (FastAPI)
-
-Open your first terminal and run the following commands:
-
-# 1. Navigate to the backend directory
+```bash
+# Navigate to the backend service
 cd backend
 
-# 2. Create a virtual environment
+# Initialize and activate the virtual environment
 python -m venv venv
+.\venv\Scripts\activate     # Windows
+# source venv/bin/activate # Mac/Linux
 
-# 3. Activate the virtual environment (Windows)
-.\venv\Scripts\activate
-# On Mac/Linux use:
-source venv/bin/activate
-
-# 4. Install dependencies
+# Install dependencies and start the Uvicorn server
 pip install -r requirements.txt
-
-# 5. Start the server
 python -m uvicorn app.main:app --reload
+```
+📍 *API listening on: `http://127.0.0.1:8000`*
 
+### 2. Start the Frontend Dashboard (Terminal 2)
 
-The backend will now be running at http://127.0.0.1:8000.
-
-Step 2: Start the Frontend (Next.js)
-
-Open a second terminal window and run the following commands:
-
-# 1. Navigate to the frontend directory
+```bash
+# Navigate to the frontend workspace
 cd frontend
 
-# 2. Install Node dependencies
+# Install Node modules
 npm install
 
-# 3. Start the development server
+# Boot the development server
 npm run dev
+```
+📍 *Client listening on: `http://localhost:3000`*
 
+---
 
-The frontend will now be running at http://localhost:3000.
+## 📁 Workspace Structure
 
-📁 Directory Structure
-
+```text
 SecondLife-main/
 │
-├── backend/                  # FastAPI Application
+├── 🐍 backend/                   # FastAPI Service
 │   ├── app/
-│   │   ├── api/routes/       # API endpoints (e.g., prediction.py)
-│   │   ├── core/             # App configuration and CORS
-│   │   ├── schemas/          # Pydantic validation models
-│   │   ├── services/         # ML prediction logic wrapper
-│   │   └── main.py           # FastAPI entry point
-│   ├── ml/models/            # Serialized XGBoost & Joblib models
-│   ├── tests/                # Pytest suites
-│   ├── requirements.txt      # Python dependencies
-│   └── test_payload.txt      # Sample JSON for testing
+│   │   ├── api/routes/           # API endpoints (e.g., prediction.py)
+│   │   ├── core/                 # App configuration & CORS config
+│   │   ├── schemas/              # Pydantic validation contracts
+│   │   └── main.py               # Uvicorn entry point
+│   ├── ml/models/                # Serialized XGBoost & Joblib ML models
+│   └── requirements.txt          # Python dependency manifest
 │
-└── frontend/                 # Next.js Application
+└── ⚛️ frontend/                  # Next.js Client
     ├── src/
-    │   ├── app/              # Next.js App Router pages and layouts
-    │   ├── components/       # Reusable UI (Form, Results, Charts)
-    │   ├── lib/              # API fetch wrappers
-    │   └── types/            # TypeScript interfaces matching Pydantic
-    ├── package.json          # Node dependencies
-    └── tailwind.config.js    # UI styling rules
+    │   ├── app/                  # Route segments & layouts
+    │   ├── components/           # Reusable UI (Forms, Result Cards, Charts)
+    │   ├── lib/                  # Typed fetch wrappers & API utilities
+    │   └── types/                # TS interfaces matching Backend schemas
+    ├── package.json              # Node dependency manifest
+    └── tailwind.config.js        # Design system configuration
+```
